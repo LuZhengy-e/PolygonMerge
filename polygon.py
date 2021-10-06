@@ -31,6 +31,9 @@ class Seg:
         if abs(np.linalg.norm(delta) - abs(np.dot(delta, self.dir_2d))) > 1e-6:
             raise IOError(f"Point {pt_2d} not in this seg")
 
+        if delta[0] == 0 and delta[1] == 0:
+            return 0
+
         if delta[0] == 0:
             return delta[1] / (self.end[1] - self.start[1])
 
@@ -197,7 +200,7 @@ class Polygon:
 
             else:
                 # logging.debug("recurrent in second...")
-                Polygon.merge_two_segs(seg1.next, seg2, pt_list, start, 0)
+                Polygon.merge_two_segs(seg1.next, seg2, pt_list, start, -1)
 
     def merge_two_polygons(self, poly):
         start_1, seg_1 = self.segs, self.segs
@@ -237,12 +240,12 @@ class Polygon:
 
 if __name__ == '__main__':
     tri_pts = [
-        np.array([0, 0, 0]), np.array([1, 1, 0]), np.array([-1, 1, 0])
+        np.array([0, 0, 0]), np.array([0.5, 0, 0]), np.array([0.5, 1, 0]), np.array([-1, 1, 0])
     ]
 
     bbox_pts = [
         np.array([-0.5, 0, 0]), np.array([0.5, 0, 0]),
-        np.array([0.5, 0.5, 0]), np.array([-0.5, 0.5, 0])
+        np.array([0.5, 1, 0]), np.array([-0.5, 0.5, 0])
     ]
 
     tri = Polygon(tri_pts, "0")
