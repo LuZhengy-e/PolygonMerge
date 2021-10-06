@@ -226,9 +226,13 @@ class Polygon:
         while seg_1:
             pt = Point(seg_1.start[0:2].tolist())
             if not pt.within(poly2) and not pt.within(poly2.exterior):
-                # logging.debug("has in this function")
-                self.merge_two_segs(seg_1, seg_2, result, seg_1, 0)
-                return result
+                try:
+                    self.merge_two_segs(seg_1, seg_2, result, seg_1, 0)
+
+                except RuntimeError:
+                    result = None
+                    logging.info("can't merge two polygon")
+                    break
 
             if seg_1.next == start_1:
                 break
@@ -240,12 +244,12 @@ class Polygon:
 
 if __name__ == '__main__':
     tri_pts = [
-        np.array([0, 0, 0]), np.array([0.5, 0, 0]), np.array([0.5, 1, 0]), np.array([-1, 1, 0])
+        np.array([0, 0, 0]), np.array([0.5, 0, 0]), np.array([0.5, 1, 0]), np.array([0, 1, 0])
     ]
 
     bbox_pts = [
-        np.array([-0.5, 0, 0]), np.array([0.5, 0, 0]),
-        np.array([0.5, 1, 0]), np.array([-0.5, 0.5, 0])
+        np.array([0, 0, 0]), np.array([-1, -1, 0]),
+        np.array([0, -2, 0]), np.array([1, -1, 0])
     ]
 
     tri = Polygon(tri_pts, "0")
